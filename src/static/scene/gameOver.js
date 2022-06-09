@@ -22,8 +22,13 @@ class GameOver extends Phaser.Scene {
         }
         else
         {
-            finalscore = SnakeSweeperScore;
-            this.add.text((config.scale.width/2)+50,config.scale.height/3+170-150,"Win", { font: "74px Arial Black", fill: "#fff" });
+            if (multiplayer === false){
+                finalscore =SnakeSweeperScoreSolo;
+            } else {
+                finalscore = SnakeSweeperScore;
+                this.add.text((config.scale.width/2)+50,config.scale.height/3+170-150,"Win", { font: "74px Arial Black", fill: "#fff" });
+            }
+            
         }
         var ScoreText = this.add.text((config.scale.width/2)+50,config.scale.height/3+100-150,finalscore, { font: "74px Arial Black", fill: "#fff" });
         var resetButton = this.add.text((config.scale.width/3)-200,config.scale.height/3+300,'reset', { font: "74px Arial Black", fill: "#FF0000" });

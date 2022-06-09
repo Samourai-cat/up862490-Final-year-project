@@ -15,7 +15,10 @@ var keyA;
 var keyD;
 var started = false;
 var SnakeSweeperScore = "Player 1";
-
+var multiplayer = false;
+var SnakeSweeperScoreSolo = 0;
+var snakeSpeed= 800;
+var darkmode = false;
 class SnakeSweeperScene extends Phaser.Scene {
     
     constructor(){
@@ -24,6 +27,7 @@ class SnakeSweeperScene extends Phaser.Scene {
     preload ()
     {
         this.load.spritesheet("board", "src/assets/board.png", {frameWidth: 16, frameHeight: 16});
+        this.load.spritesheet("boardDark", "src/assets/boardBlack.png", {frameWidth: 16, frameHeight: 16});
         this.load.image('food', 'src/assets/food.png');
         this.load.image('body', 'src/assets/body.png');
     }
@@ -53,6 +57,7 @@ class SnakeSweeperScene extends Phaser.Scene {
             eat: function ()
             {
                 this.total++;
+                SnakeSweeperScoreSolo= this.total++;
             }
     
         });
@@ -71,7 +76,7 @@ class SnakeSweeperScene extends Phaser.Scene {
     
                 this.alive = true;
     
-                this.speed = 800;
+                this.speed = snakeSpeed;
     
                 this.moveTime = 0;
     
@@ -213,14 +218,19 @@ class SnakeSweeperScene extends Phaser.Scene {
         });
     
         food = new Food(this, 24, 19);
-        food2 = new Food(this, 25, 19);
+
         snake = new Snake(this, -1, 0,RIGHT);
-        snake2 = new Snake(this, 50,39,LEFT);    
+        if (multiplayer === true) {
+            snake2 = new Snake(this, 50,39,LEFT); 
+            food2 = new Food(this, 25, 19);
+            keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+            keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+            keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+            keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        }
+           
         cursors = this.input.keyboard.createCursorKeys();
-        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+
     }
     update(time, delta)
     {
@@ -259,55 +269,60 @@ class SnakeSweeperScene extends Phaser.Scene {
         {
             board.checkCollition(snake,2);
 
-            checkSnakesCollition(snake,snake2);
             if (snake.collideWithFood(food))
             {
                 repositionFood(food);
             }
-            if (snake.collideWithFood(food2))
-            {
-                repositionFood(food2);
+            if (multiplayer === true) {
+                if (snake.collideWithFood(food2))
+                    {
+                        repositionFood(food2);
+                    }
+                checkSnakesCollition(snake,snake2);
             }
+            
         }
-        if (!snake2.alive)
-        {
-            started = false;
-            this.scene.start('GameOverScene', GameOver, true);
-            this.scene.stop();
-            return;
-        }
+        if (multiplayer === true) {
+            if (!snake2.alive)
+            {
+                started = false;
+                this.scene.start('GameOverScene', GameOver, true);
+                this.scene.stop();
+                return;
+            }
 
-        if (keyA.isDown)
-        {
-            snake2.faceLeft();
-            started = true;
-        }
-        else if (keyD.isDown)
-        {
-            snake2.faceRight();
-            started = true;
-        }
-        else if (keyW.isDown)
-        {
-            snake2.faceUp();
-            started = true;
-        }
-        else if (keyS.isDown)
-        {
-            snake2.faceDown();
-            started = true;
-        }
-        if (snake2.update(time) && started === true)
-        {
-            board.checkCollition(snake2,1);
- 
-            if (snake2.collideWithFood(food))
+            if (keyA.isDown)
             {
-                repositionFood(food);
+                snake2.faceLeft();
+                started = true;
             }
-            if (snake2.collideWithFood(food2))
+            else if (keyD.isDown)
             {
-                repositionFood(food2);
+                snake2.faceRight();
+                started = true;
+            }
+            else if (keyW.isDown)
+            {
+                snake2.faceUp();
+                started = true;
+            }
+            else if (keyS.isDown)
+            {
+                snake2.faceDown();
+                started = true;
+            }
+            if (snake2.update(time) && started === true)
+            {
+                board.checkCollition(snake2,1);
+    
+                if (snake2.collideWithFood(food))
+                {
+                    repositionFood(food);
+                }
+                if (snake2.collideWithFood(food2))
+                {
+                    repositionFood(food2);
+                }
             }
         }
 

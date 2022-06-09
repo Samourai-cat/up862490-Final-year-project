@@ -21,10 +21,13 @@ const cell_states = {
 class Cell extends Phaser.GameObjects.Sprite{
 
     constructor(board, scene, x, y, xpos, ypos, mine){
-
         let default_state = cell_states.COVERED;
-
-        super(scene, x, y, "board", default_state);
+        if(darkmode===false){
+            super(scene, x, y, "board", default_state);
+        }else{
+            super(scene, x, y, "boardDark", default_state);
+        }
+        
         scene.add.existing(this);
 
         this.x = x;

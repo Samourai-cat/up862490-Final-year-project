@@ -11,6 +11,7 @@ class MainScene extends Phaser.Scene {
     }
     create ()
     {
+        this.add.text(config.scale.width/2-60,config.scale.height/8,'SnakeSweeper')
 
         let buttonsnake = this.add.image(config.scale.width/2, config.scale.height/3, 'buttonsnake');
         buttonsnake.setScale(0.7);
@@ -47,14 +48,15 @@ class MainScene extends Phaser.Scene {
 
         buttonsnakesweeper2.on('pointerdown', function () {
             currentScene = 3;
-            this.scene.switch('SnakeSweeperSceneGame', SnakeSweeperScene, true);
+            // this.scene.switch('SnakeSweeperSceneGame', SnakeSweeperScene, true);
+            this.scene.start('OptionMenuScene', OptionMenu, true);
 
         }, this);
 
         buttonsnakesweeper.on('pointerdown', function () {
             currentScene = 3;
             // this.scene.switch('SnakeSweeperSceneGame', SnakeSweeperScene, true);
-            this.scene.start('GameOverScene', GameOver, true);
+            this.scene.start('OptionMenuScene', OptionMenu, true);
         }, this);
     }
 
